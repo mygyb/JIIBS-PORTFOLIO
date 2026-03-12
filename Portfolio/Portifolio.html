@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JIIB🗣️ • Full-Stack Developer &  Computer Scientist</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-alt: #161b22;
+      --text: #c9d1d9;
+      --text-light: #8b949e;
+      --accent: #58a6ff;
+      --accent-dark: #388bfd;
+      --border: #30363d;
+      --card: #161b22;
+      --vscode-bg: #1e1e1e;
+      --vscode-sidebar: #252526;
+      --vscode-tab: #2d2d2d;
+      --vscode-text: #cccccc;
+      --comment: #6a9955;
+      --string: #ce9178;
+      --keyword: #569cd6;
+      --function: #dcdcaa;
+      --error-underline: #f44747;
+      --gradient: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:#0d1117; color:var(--text); font-family:'Inter',system-ui,sans-serif; }
+
+    /* VS Code Interface */
+    .vscode { display:flex; flex-direction:column; height:100vh; background:var(--vscode-bg); color:var(--vscode-text); font-family:'JetBrains Mono',monospace; }
+    .title-bar { height:30px; background:#1f1f1f; display:flex; align-items:center; padding:0 12px; font-size:12px; border-bottom:1px solid #2d2d2d; }
+    .title-bar-text { flex:1; text-align:center; font-size:13px; color:#ccc; }
+    .activity-bar { width:50px; background:#252526; display:flex; flex-direction:column; align-items:center; padding-top:12px; gap:24px; }
+    .activity-icon { font-size:24px; color:#858585; cursor:pointer; transition:all .2s; }
+    .activity-icon.active { color:#58a6ff; }
+    .main-area { flex:1; display:flex; overflow:hidden; }
+    .sidebar { width:260px; background:var(--vscode-sidebar); border-right:1px solid #2d2d2d; display:flex; flex-direction:column; }
+    .sidebar-header { height:35px; background:#2d2d2d; padding:0 12px; display:flex; align-items:center; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#ccc; }
+    .file-tree { flex:1; padding:8px 0; font-size:13px; overflow-y:auto; }
+    .tree-folder { padding:4px 12px; color:#ccc; font-weight:500; }
+    .tree-file { padding:2px 12px 2px 28px; display:flex; align-items:center; gap:6px; color:#ddd; cursor:pointer; }
+    .tree-file:hover { background:#2a2d2e; }
+    .tree-file.active { background:#37373d; color:#58a6ff; }
+    .editor-area { flex:1; display:flex; flex-direction:column; background:#1e1e1e; }
+    .tabs { height:35px; background:#252526; display:flex; align-items:center; border-bottom:1px solid #2d2d2d; overflow-x:auto; }
+    .tab { padding:0 24px; height:100%; display:flex; align-items:center; gap:8px; background:#2d2d2d; color:#ccc; font-size:12px; white-space:nowrap; border-right:1px solid #1e1e1e; cursor:pointer; transition:all .2s; }
+    .tab.active { background:#1e1e1e; color:#fff; border-top:2px solid #58a6ff; }
+    .tab-close { font-size:16px; opacity:0.6; }
+    .editor-content { flex:1; padding:40px 60px; overflow-y:auto; background:var(--bg); line-height:1.7; font-family:'Inter',sans-serif; }
+    .status-bar { height:28px; background:#007acc; color:#fff; font-size:11px; display:flex; align-items:center; padding:0 12px; gap:20px; }
+    .status-left { display:flex; gap:16px; }
+    .status-right { margin-left:auto; display:flex; gap:16px; }
+
+    /* Enter Modal */
+    #enter-modal { position:fixed; inset:0; background:rgba(13,17,23,0.96); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:24px; color:#fff; font-family:'JetBrains Mono',monospace; text-align:center; }
+    #enter-modal .modal-box { background:#161b22; border:2px solid #58a6ff; border-radius:12px; padding:48px 64px; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+    #enter-modal h2 { font-size:1.8rem; margin-bottom:12px; background:linear-gradient(90deg,#58a6ff,#a371f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    #enter-modal .enter-key { font-size:4rem; margin:16px 0; color:#58a6ff; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+
+    /* Typewriter */
+    .hero h1 { font-size:3.6rem; font-weight:700; background:linear-gradient(90deg,#58a6ff,#a371f7,#ed64b5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; min-height:80px; }
+    #typing-phrase { font-size:1.35rem; color:#58a6ff; font-family:'JetBrains Mono',monospace; min-height:40px; margin:16px 0; }
+
+    /* Syntax Highlighting */
+    .comment { color: var(--comment); font-style: italic; }
+    .string   { color: var(--string); }
+    .keyword  { color: var(--keyword); font-weight: 500; }
+    .function { color: var(--function); }
+    .error-underline { background: linear-gradient(transparent 85%, var(--error-underline) 85%, var(--error-underline) 100%); background-size: 4px 4px; background-repeat: repeat-x; text-decoration: none; }
+
+    /* Scroll Animations */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; position:relative; }
+    .about-grid::before { content:''; position:absolute; left:50%; top:40px; bottom:40px; width:2px; background:#30363d; z-index:0; }
+    .about-text, .timeline-item { position:relative; z-index:1; opacity:0; transition:all 0.8s cubic-bezier(0.25,0.1,0.25,1); }
+    .about-text.animate { animation:swingLeft 0.9s forwards; }
+    .timeline-item.animate-right { animation:swingRight 0.9s forwards; }
+    .timeline-item.animate-left { animation:swingLeft 0.9s forwards; }
+    @keyframes swingLeft { from { opacity:0; transform:translateX(-80px) rotate(-8deg); } to { opacity:1; transform:translateX(0) rotate(0); } }
+    @keyframes swingRight { from { opacity:0; transform:translateX(80px) rotate(8deg); } to { opacity:1; transform:translateX(0) rotate(0); } }
+
+    .timeline { position:relative; }
+    .timeline::before { content:''; position:absolute; width:2px; background:#30363d; top:0; bottom:0; left:50%; transform:translateX(-50%); }
+    .timeline-item { margin-bottom:2.5rem; width:46%; padding:20px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+    .timeline-item:nth-child(odd) { margin-left:0; }
+    .timeline-item:nth-child(even) { margin-left:auto; }
+
+    /* Skills */
+    .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+    .skill-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:28px; transition:all .3s; display:flex; flex-direction:column; align-items:center; text-align:center; }
+    .skill-card:hover { border-color:var(--accent); transform:translateY(-8px); }
+    .skill-icon { font-size:68px; margin-bottom:16px; color:#fff; }
+    .skill-title { font-size:1.35rem; color:var(--accent); margin-bottom:8px; }
+
+    /* Rest of original styles */
+    .container { max-width:1100px; margin:0 auto; padding:0 24px; }
+    .cta-btn { background:var(--accent); color:white; border:none; padding:14px 32px; font-size:1.1rem; font-weight:500; border-radius:8px; cursor:pointer; transition:all .3s; text-decoration:none; display:inline-block; }
+    .cta-btn:hover { background:var(--accent-dark); transform:translateY(-3px); box-shadow:0 10px 30px rgba(88,166,255,0.3); }
+    section { padding:80px 0; }
+    h2 { font-size:2.8rem; text-align:center; margin-bottom:4rem; color:white; position:relative; }
+    h2::after { content:''; width:90px; height:4px; background:var(--accent); position:absolute; bottom:-16px; left:50%; transform:translateX(-50%); border-radius:2px; }
+    .about-text p { margin-bottom:1.4rem; color:var(--text); }
+    .timeline-title { font-weight:600; color:white; margin-bottom:0.4rem; }
+    .timeline-period { color:var(--text-light); font-size:0.95rem; margin-bottom:0.6rem; }
+    .projects-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:32px; }
+    .project-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:all .35s; }
+    .project-card:hover { transform:translateY(-12px); border-color:var(--accent); box-shadow:0 20px 50px rgba(88,166,255,0.15); }
+    .project-img-placeholder { height:300px; background:linear-gradient(135deg,#1e293b,#334155); display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:var(--text-light); }
+    .project-content { padding:24px; }
+    .project-title { font-size:1.5rem; margin-bottom:0.8rem; color:white; }
+    .project-desc { color:var(--text-light); margin-bottom:1.4rem; }
+    .tech-tags { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:1.4rem; }
+    .tag { background:#21262d; color:#79c0ff; padding:6px 14px; border-radius:30px; font-size:0.85rem; border:1px solid #30363d; }
+    .project-links a { color:var(--accent); margin-right:1.5rem; text-decoration:none; font-weight:500; }
+    .project-links a:hover { text-decoration:underline; }
+    .contact-form { max-width:680px; margin:0 auto; }
+    .form-group { margin-bottom:24px; }
+    input, textarea { width:100%; padding:14px 18px; background:#0d1117; border:1px solid var(--border); border-radius:8px; color:white; font-family:inherit; font-size:1rem; }
+    textarea { min-height:160px; resize:vertical; }
+    .social-links { margin:2rem 0; text-align:center; }
+    .social-links a { color:var(--text-light); font-size:1.6rem; margin:0 16px; transition:color .3s; }
+    .social-links a:hover { color:var(--accent); }
+    .stats-section { background:var(--card); padding:80px 0; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.06); margin:60px 0; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:40px; text-align:center; }
+    .stat-item h3 { font-size:3.2rem; font-weight:700; color:var(--accent); margin-bottom:0.6rem; }
+    .stat-item p { font-size:1.1rem; color:var(--text-light); }
+    .avatar { width:160px; height:160px; border-radius:50%; border:6px solid #58a6ff; box-shadow:0 10px 30px rgba(0,0,0,0.12); object-fit:cover; margin-bottom:1.8rem; }
+
+    @media (max-width:1024px) {
+      .sidebar { width:200px; }
+      .editor-content { padding:24px 32px; }
+      .about-grid { grid-template-columns:1fr; }
+      .about-grid::before { display:none; }
+      .timeline::before { left:20px; }
+      .timeline-item { width:100%; margin-left:0 !important; }
+    }
+    @media (max-width:768px) {
+      .main-area { flex-direction:column; }
+      .sidebar { width:100%; height:180px; }
+      .activity-bar { flex-direction:row; height:50px; width:100%; padding:0; }
+      .editor-content { padding:20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="vscode">
+  <!-- TITLE BAR -->
+  <div class="title-bar">
+    <div class="title-bar-text">MUYINGO NAJIIB — Portfolio • Visual Studio Code</div>
+  </div>
+
+  <div class="main-area">
+    <!-- ACTIVITY BAR -->
+    <div class="activity-bar">
+      <i class="activity-icon active fa-solid fa-folder-open"></i>
+      <i class="activity-icon fa-solid fa-magnifying-glass"></i>
+      <i class="activity-icon fa-solid fa-code-branch"></i>
+      <i class="activity-icon fa-solid fa-bug"></i>
+      <i class="activity-icon fa-solid fa-gear"></i>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header"><span>PORTFOLIO</span></div>
+      <div class="file-tree">
+        <div class="tree-folder">📁 PORTFOLIO</div>
+        <div class="tree-file"><i class="devicon-typescript-plain colored"></i> home.tsx</div>
+        <div class="tree-file active"><i class="devicon-html5-plain colored"></i> about.html</div>
+        <div class="tree-file"><i class="devicon-javascript-plain colored"></i> projects.js</div>
+        <div class="tree-file"><i class="devicon-json-plain colored"></i> skills.json</div>
+        <div class="tree-file"><i class="devicon-typescript-plain colored"></i> experience.ts</div>
+        <div class="tree-file"><i class="devicon-css3-plain colored"></i> contact.css</div>
+        <div class="tree-file"><i class="devicon-markdown-plain"></i> README.md</div>
+      </div>
+    </div>
+
+    <!-- EDITOR AREA -->
+    <div class="editor-area">
+      <!-- TABS -->
+      <div class="tabs">
+        <div class="tab active" data-target="hero"><i class="devicon-typescript-plain"></i> home.tsx <span class="tab-close">×</span></div>
+        <div class="tab" data-target="about"><i class="devicon-html5-plain"></i> about.html <span class="tab-close">×</span></div>
+        <div class="tab" data-target="skills"><i class="devicon-css3-plain"></i> contact.css <span class="tab-close">×</span></div>
+        <div class="tab" data-target="projects"><i class="devicon-json-plain"></i> skills.json <span class="tab-close">×</span></div>
+        <div class="tab" data-target="contact"><i class="devicon-typescript-plain"></i> experience.ts <span class="tab-close">×</span></div>
+      </div>
+
+      <!-- EDITOR CONTENT -->
+      <div class="editor-content" id="editor-content">
+
+        <!-- HERO -->
+        <div id="hero" class="hero" style="text-align:center; padding:60px 0 100px;">
+          <img src="JIIB.jpg" alt="MUYINGO NAJIIB Profile" class="avatar" style="width:140px;height:140px;border-radius:50%;border:4px solid #569cd6;margin-bottom:24px;">
+          <h1 id="hero-name" style="font-size:3.4rem; color:#dcdcaa;"></h1>
+          <div id="typing-phrase" style="font-size:1.3rem; color:#569cd6; margin:16px 0; min-height:40px;"></div>
+          <p class="comment">// Full-Stack Computer Scientist • <span class="string">"building scalable systems"</span></p>
+          <a href="#contact" class="cta-btn">Get in Touch</a>
+        </div>
+
+        <!-- ABOUT -->
+        <section id="about">
+          <h2>About Me</h2>
+          <div class="about-grid">
+            <!-- LEFT SIDE (now has .about-text) -->
+            <div class="about-text">
+              <p class="comment" style="color: green;">// Passionate developer focused on clean architecture</p>
+              <p>I'm a <span class="keyword">full-stack</span> developer creating <span class="function">performant</span>, user-centric applications.</p>
+              <p class="comment">// Currently exploring</p>
+              <p class="string">"TypeScript, serverless, AI tooling, cloud-native"</p>
+              <p class="error-underline">Outside of coding, I contribute to open-sorce projects</p>
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div>
+              <h3 style="color:white;margin-bottom:1.5rem;">Education</h3>
+              <div class="timeline" id="education-timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">Bachelor of Computer Science</div>
+                  <div class="timeline-period">Kyambogo University • 2018 – 2022</div>
+                  <p>Graduated with Honors. Focused on algorithms, data structures, web & mobile development, databases, and software architecture.</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">Google IT Support Professional Certificate</div>
+                  <div class="timeline-period">Coursera • 2023</div>
+                  <p>Strengthened foundational knowledge in systems administration, networking, security, and cloud computing.</p>
+                </div>
+              </div>
+
+              <h3 style="color:white;margin:3rem 0 1.5rem;">Experience</h3>
+              <div class="timeline" id="experience-timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">Full-Stack Developer</div>
+                  <div class="timeline-period">TechStartup Ltd • 2024 – Present</div>
+                  <p>Developed and maintained multiple client-facing web applications using Next.js, TypeScript, Node.js, PostgreSQL, and AWS services. Reduced page load times by 45%.</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">Frontend Developer (Freelance/Intern)</div>
+                  <div class="timeline-period">Various Projects • 2022 – 2024</div>
+                  <p>Built responsive UIs, integrated APIs, and collaborated with design & product teams to deliver high-quality features on time.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" style="background:#0a0e14">
+          <div class="container">
+            <h2>Core Skills</h2>
+            <div class="skills-grid">
+              <div class="skill-card"><i class="devicon-javascript-plain skill-icon"></i><div class="skill-title">JavaScript / TypeScript</div><p>Modern ES modules, async patterns, React/Next.js ecosystem, strong typing</p></div>
+              <div class="skill-card"><i class="devicon-react-original skill-icon"></i><div class="skill-title">React & Next.js</div><p>App Router, Server Components, SSR/SSG, TanStack Query, Tailwind</p></div>
+              <div class="skill-card"><i class="devicon-nodejs-plain skill-icon"></i><div class="skill-title">Node.js & Backend</div><p>Express/NestJS, REST & GraphQL, JWT, Prisma</p></div>
+              <div class="skill-card"><i class="devicon-postgresql-plain skill-icon"></i><div class="skill-title">Databases & Cloud</div><p>PostgreSQL, MongoDB, AWS, Docker</p></div>
+              <div class="skill-card"><i class="devicon-git-plain skill-icon"></i><div class="skill-title">Tools & DevOps</div><p>Git, GitHub Actions, Vercel, Linux, VS Code</p></div>
+              <div class="skill-card"><i class="devicon-rust-plain skill-icon"></i><div class="skill-title">Currently Exploring</div><p>Rust, Go, tRPC, WebAssembly, AI integration</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="stats-section" id="stats">
+          <div class="container">
+            <div class="stats-grid">
+              <div class="stat-item"><h3 data-count="45" data-suffix="+">0</h3><p>Projects Completed</p></div>
+              <div class="stat-item"><h3 data-count="120" data-suffix="+">0</h3><p>Students Mentored</p></div>
+              <div class="stat-item"><h3 data-count="3" data-suffix="+ Years">0</h3><p>Professional Experience</p></div>
+              <div class="stat-item"><h3 data-count="98" data-suffix="%">0</h3><p>Client Satisfaction</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+          <div class="container">
+            <h2>MY PROJECTS</h2>
+            <div class="projects-grid">
+              <div class="project-card">
+                <div class="project-img-placeholder"><img src="system.png" alt="JIIBSCORE SYNC SYSTEM Screenshot" style="width:100%;height:auto;display:block;"></div>
+                <div class="project-content">
+                  <h3 class="project-title">JIIBSCORE SYNC</h3>
+                  <p class="project-desc">Built a web based Secondary school Reporting & Student Data Management System following the NCDC New Curriculum. It Stores data and generates JSON files which act as Data backups incase of data loss.</p>
+                  <div class="tech-tags">
+                    <span class="tag">Node.js 14</span><span class="tag">TypeScript</span><span class="tag">Bootstrap</span><span class="tag">cloudflare</span><span class="tag">WebSockets</span>
+                  </div>
+                  <div class="project-links">
+                    <a href="https://jiib-score-sync-system.pages.dev" target="_blank">Live Demo</a>
+                    <a href="https://jiib-score-sync-system.pages.dev" target="_blank">JIIBSCORE SYNC SYSTEM</a>
+                  </div>
+                </div>
+              </div>
+              <div class="project-card">
+                <div class="project-img-placeholder"><img src="calcut.png" alt="CALCUTScreenshot" style="width:100%;height:auto;display:block;"></div>
+                <div class="project-content">
+                  <h3 class="project-title">CALCUT APP</h3>
+                  <p class="project-desc">This is an online web based app (Also available on App-Store) that simplifies the process of university admission by instantly calculating academic cut-off points and matching students with eligible courses at Universities across Uganda.</p>
+                  <div class="tech-tags">
+                    <span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span class="tag">React</span><span class="tag">Stripe</span><span class="tag">Docker</span>
+                  </div>
+                  <div class="project-links">
+                    <a href="http://calcut.app" target="_blank">Live Demo</a>
+                    <a href="http://calcut.app" target="_blank">CALCUT APP</a>
+                  </div>
+                </div>
+              </div>
+              <div class="project-card">
+                <div class="project-img-placeholder"><img src="dating.png" alt="AGENT MATCH" style="width:100%;height:auto;display:block;"></div>
+                <div class="project-content">
+                  <h3 class="project-title">AGENT MATCH</h3>
+                  <p class="project-desc">This a platform that lets you watch AI agents "find love" (or matchmake) in real time. The #1 dating and collaboration platform for autonomous AI agents," with features like intelligent matching, real-time chat, and on-chain commitments</p>
+                  <div class="tech-tags">
+                    <span class="tag">Next.js</span><span class="tag">OpenAI API</span><span class="tag">Tailwind</span><span class="tag">Prisma</span><span class="tag">Vercel</span>
+                  </div>
+                  <div class="project-links">
+                    <a href="https://agentmatch.space/observe" target="_blank">Live Demo</a>
+                    <a href="https://agentmatch.space/observe" target="_blank">AGENT MATCH</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" style="background:var(--gradient);">
+          <div class="container">
+            <h2>Let's Build Something Great Together</h2>
+            <form class="contact-form">
+              <div class="form-group"><input type="text" placeholder="Your Name" required/></div>
+              <div class="form-group"><input type="email" placeholder="Your Email" required/></div>
+              <div class="form-group"><textarea placeholder="Tell me about your project or opportunity..." required></textarea></div>
+              <button type="submit" class="cta-btn">Send Message</button>
+            </form>
+            <div class="social-links">
+              <a href="https://github.com/mygyb" target="_blank"><i class="fab fa-github"></i></a>
+              <a href="https://x.com/MygJyb" target="_blank"><i class="fab fa-x-twitter"></i></a>
+              <a href="https://linkedin.com/in/jiib-dev" target="_blank"><i class="fab fa-linkedin"></i></a>
+              <a href="mailto:mygjyb@gmail.com"><i class="fas fa-envelope"></i></a>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer style="text-align:center;padding:80px 0 40px;color:#8b949e;border-top:1px solid #30363d;">
+          <div class="container">
+            <p>© 2026 MUYINGO NAJIIB — Crafted with precision and passion</p>
+            <p style="margin-top:1rem;font-size:0.95rem;">Proudly built using HTML, CSS, and a lot of coffee • Last updated March 2026</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+
+    <!-- COPILOT PANEL -->
+    <div style="width:280px;background:#252526;border-left:1px solid #2d2d2d;padding:16px;overflow-y:auto;font-size:13px;">
+      <div style="color:#58a6ff;font-weight:600;margin-bottom:12px;">JIIB's Copilot</div>
+      <div style="background:#161b22;padding:16px;border-radius:8px;margin-bottom:16px;">Hi! I'm your AI assistant. Ask me anything about my projects, skills, experience, or achievements.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#161b22;padding:12px;border-radius:6px;cursor:pointer;">Tell me about JIIB?</div>
+        <div style="background:#161b22;padding:12px;border-radius:6px;cursor:pointer;">What projects has he built?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-left"><span>main</span><span>UTF-8</span><span>HTML</span><span>Prettier</span></div>
+    <div class="status-right"><span>Powered by JIIB🗣️</span><span>1:55 AM</span><span>March 12, 2026</span></div>
+  </div>
+</div>
+
+<!-- ENTER MODAL -->
+<div id="enter-modal">
+  <div class="modal-box">
+    <h2>WELCOME TO JIIB's PORTFOLIO</h2>
+    <p style="font-size:1.1rem; color:#8b949e; margin-bottom:24px;">
+      Tap anywhere on the screen or press <strong>ENTER</strong> to continue
+    </p>
+    <div class="enter-key">TAP SCREEN ⏎</div>
+    <p style="font-size:0.9rem; color:#58a6ff;">JIIB🗣️ • Full-Stack Developer</p>
+  </div>
+</div>
+
+<script>
+  // ENTER MODAL
+  const modal = document.getElementById('enter-modal');
+  modal.style.display = 'flex';
+  document.addEventListener('keydown', function handler(e) {
+    if (e.key === 'Enter') {
+      modal.style.opacity = '0';
+      setTimeout(() => modal.style.display = 'none', 600);
+      document.removeEventListener('keydown', handler);
+    }
+  });
+
+  // Allow tap/click anywhere on modal to close it (mobile friendly)
+modal.addEventListener('click', function(e) {
+  // Only close if they clicked the modal background or the box itself
+  if (e.target === modal || e.target.closest('.modal-box')) {
+    modal.style.opacity = '0';
+    setTimeout(() => modal.style.display = 'none', 600);
+  }
+});
+
+  // INFINITE NAME TYPEWRITER (MUYINGO NAJIIB repeats forever)
+  const nameEl = document.getElementById('hero-name');
+  const fullName = "MUYINGO NAJIIB";
+  let charIndex = 0;
+  let isDeleting = false;
+  function typeNameLoop() {
+    nameEl.textContent = fullName.substring(0, charIndex);
+    if (!isDeleting) {
+      if (charIndex < fullName.length) {
+        charIndex++;
+        setTimeout(typeNameLoop, 90);
+      } else {
+        setTimeout(() => { isDeleting = true; typeNameLoop(); }, 1800);
+      }
+    } else {
+      if (charIndex > 0) {
+        charIndex--;
+        setTimeout(typeNameLoop, 50);
+      } else {
+        isDeleting = false;
+        setTimeout(typeNameLoop, 600);
+      }
+    }
+  }
+  setTimeout(typeNameLoop, 1200);
+
+  // CYCLING PROGRAMMER MESSAGES
+  const phrases = ["JIIB is an Expert Full-Stack developer","Turning ideas into scalable code","Problem solver with clean architecture","Passionate about modern web tech","JIIB Builds the future line by line"];
+  let phraseIndex = 0;
+  const typingEl = document.getElementById('typing-phrase');
+  function typeDeleteLoop() {
+    let text = phrases[phraseIndex];
+    let pos = 0;
+    typingEl.textContent = '';
+    function type() {
+      if (pos < text.length) { typingEl.textContent += text.charAt(pos); pos++; setTimeout(type, 50); }
+      else setTimeout(deleteText, 1800);
+    }
+    function deleteText() {
+      if (pos > 0) { typingEl.textContent = typingEl.textContent.slice(0, -1); pos--; setTimeout(deleteText, 30); }
+      else { phraseIndex = (phraseIndex + 1) % phrases.length; setTimeout(typeDeleteLoop, 400); }
+    }
+    type();
+  }
+  setTimeout(typeDeleteLoop, 2400);
+
+  // TABS SCROLL TO SECTION (only one listener)
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const targetId = tab.getAttribute('data-target');
+      if (targetId) {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // SCROLL ANIMATIONS & STATS (internal scroll observer)
+  const editorContent = document.getElementById('editor-content');
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target.classList.contains('about-text')) entry.target.classList.add('animate');
+        if (entry.target.id === 'education-timeline') {
+          entry.target.querySelectorAll('.timeline-item').forEach((item, idx) => setTimeout(() => item.classList.add('animate-right'), idx * 180));
+        }
+        if (entry.target.id === 'experience-timeline') {
+          entry.target.querySelectorAll('.timeline-item').forEach((item, idx) => setTimeout(() => item.classList.add(idx % 2 === 0 ? 'animate-left' : 'animate-right'), idx * 220));
+        }
+      }
+    });
+  }, { threshold: 0.3, root: editorContent });
+
+  scrollObserver.observe(document.querySelector('.about-text'));
+  scrollObserver.observe(document.getElementById('education-timeline'));
+  scrollObserver.observe(document.getElementById('experience-timeline'));
+
+  const counters = document.querySelectorAll('[data-count]');
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-count');
+          const suffix = counter.getAttribute('data-suffix') || '';
+          let count = 0;
+          const inc = target / 80;
+          const update = () => {
+            count += inc;
+            if (count < target) { counter.textContent = Math.ceil(count) + suffix; requestAnimationFrame(update); }
+            else counter.textContent = target + suffix;
+          };
+          update();
+        });
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3, root: editorContent });
+  statObserver.observe(document.getElementById('stats'));
+
+  // Prevent form refresh
+  document.querySelector('form').addEventListener('submit', e => e.preventDefault());
+</script>
+</body>
+</html>
